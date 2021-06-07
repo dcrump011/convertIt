@@ -1,0 +1,325 @@
+
+<html>
+<link rel="stylesheet" type="text/css" href="Loginc.css">
+<link rel="icon" href="Files/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+      position: relative; 
+  }
+  
+  .componentDiv{
+      width: 35%;
+      margin: 5px;
+  }
+  
+  .divider{
+      border-left: 2px solid grey;
+      height: 500px;
+      width: 2px;
+      margin-left: 35px;
+  }
+  
+  .textBoxStyle{
+      margin-top: 60px;
+  }
+
+  
+
+</style>
+
+<meta charset="UTF-8">
+  <title>unitConverter</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--Boostrap/Other Scripts-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!--React Scripts-->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+
+<!--Navigation Bar.-->
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">  
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="#section1">unitConverter - Weight</a>
+    </li>
+  </ul>
+</nav>
+
+
+<div data-spy="scroll" data-target=".navbar" data-offset="50"></div>
+<div id="section1" class="jumbotron" style="Height: 100%;">
+    
+<div id="componentDiv" class="componentDiv" style="margin-left: 30%; margin-top: 15px; margin-bottom: 20px;"></div>
+
+<script type="text/babel">
+const e = React.createElement;
+
+const unitNames = {
+    lb: "Pounds",
+    g: "Grams",
+    kg: "Kilograms",
+    oz: "Ounces",
+    ton: "Tons",
+    mg: "Milligrams"
+};
+
+function toOunces(inputValue, unitType){
+    switch (unitType){
+        case "lb":
+            return (inputValue * 16);
+            break;
+        case "ton":
+            return (inputValue * 32000);
+            break;
+        case "mg":
+            return (inputValue / 28350);
+            break;
+        case "g":
+            return (inputValue * 0.03527);
+            break;
+        case "kg":
+            return (inputValue * 35.27);
+            break;
+    }
+}
+
+function toPounds(inputValue, unitType){
+    switch (unitType){
+        case "oz":
+            return (inputValue / 16);
+            break;
+        case "ton":
+            return (inputValue * 2000);
+            break;
+        case "mg":
+            return (inputValue / 453592);
+            break;
+        case "g":
+            return (inputValue * 0.002205);
+            break;
+        case "kg":
+            return (inputValue * 2.205);
+            break;
+    }
+}
+
+function toTons(inputValue, unitType){
+    switch (unitType){
+        case "oz":
+            return (inputValue / 32000);
+            break;
+        case "lb":
+            return (inputValue / 2000);
+            break;
+        case "mg":
+            return (inputValue / 907200000);
+            break;
+        case "g":
+            return (inputValue / 907185);
+            break;
+        case "kg":
+            return (inputValue / 907);
+            break;
+    }
+}
+
+function toMilligrams(inputValue, unitType){
+    switch (unitType){
+        case "oz":
+            return (inputValue * 28350);
+            break;
+        case "lb":
+            return (inputValue * 453592);
+            break;
+        case "ton":
+            return (inputValue * 907200000);
+            break;
+        case "g":
+            return (inputValue * 1000);
+            break;
+        case "kg":
+            return (inputValue / 0.00000001);
+            break;
+    }
+}
+
+function toGrams(inputValue, unitType){
+    switch (unitType){
+        case "oz":
+            return (inputValue / 0.03527);
+            break;
+        case "lb":
+            return (inputValue / 0.002205);
+            break;
+        case "ton":
+            return (inputValue * 907185);
+            break;
+        case "mg":
+            return (inputValue / 1000);
+            break;
+        case "kg":
+            return (inputValue * 1000);
+            break;
+    }
+}
+
+function toKilograms(inputValue, unitType){
+    switch (unitType){
+        case "oz":
+            return (inputValue / 35.27);
+            break;
+        case "lb":
+            return (inputValue / 2.205);
+            break;
+        case "ton":
+            return (inputValue * 907);
+            break;
+        case "mg":
+            return (inputValue * 0.00000001);
+            break;
+        case "g":
+            return (inputValue / 1000);
+            break;
+    }
+}
+
+function tryConvert(inputValue, convertFunction, unitType){
+    const input = parseFloat(inputValue);
+    if (Number.isNaN(input)){
+        return '';
+    }
+    
+    const output = convertFunction(input, unitType);
+    const rounded = Math.round(output * 1000) / 1000;
+    
+    return rounded.toString();
+}
+
+class UnitInput extends React.Component{
+    constructor(props){
+        super(props);
+        this.handleChange=this.handleChange.bind(this);
+    }
+    
+    handleChange(event){
+        this.props.onValueChange(event.target.value);
+    }
+    
+    render(){
+        return(
+            <div className="textBoxStyle">
+                <a>{unitNames[this.props.unitName]}:</a>
+                <input value={this.props.unitValue} onChange={this.handleChange} />
+            </div>
+            );
+    }
+}
+
+
+class Form extends React.Component{
+    constructor(props){
+        super(props);
+        this.handlePoundsChange=this.handlePoundsChange.bind(this);
+        this.handleGramsChange=this.handleGramsChange.bind(this);
+        this.handleKilogramsChange=this.handleKilogramsChange.bind(this);
+        this.handleOuncesChange=this.handleOuncesChange.bind(this);
+        this.handleTonsChange=this.handleTonsChange.bind(this);
+        this.handleMilligramsChange=this.handleMilligramsChange.bind(this);
+        this.state={
+            unitValue: '',
+            unitType: "lb"
+        }
+    }
+    
+    handlePoundsChange(unitValue){
+        this.setState({
+            unitValue,
+            unitType: "lb"
+        })
+    }
+    
+    handleGramsChange(unitValue){
+        this.setState({
+            unitValue,
+            unitType: 'g'
+        })
+    }
+    
+    handleKilogramsChange(unitValue){
+        this.setState({
+            unitValue,
+            unitType: 'kg'
+        })
+    }
+    
+    handleOuncesChange(unitValue){
+        this.setState({
+            unitValue,
+            unitType: 'oz'
+        })
+    }
+    
+    handleTonsChange(unitValue){
+        this.setState({
+            unitValue,
+            unitType: 'ton'
+        })
+    }
+    
+    handleMilligramsChange(unitValue){
+        this.setState({
+            unitValue,
+            unitType: 'mg'
+        })
+    }
+    
+    render(){
+        const unitValue=this.state.unitValue;
+        const pounds = this.state.unitType !== "lb" ? tryConvert(unitValue, toPounds, this.state.unitType) : unitValue;
+        const grams = this.state.unitType !== 'g' ? tryConvert(unitValue, toGrams, this.state.unitType) : unitValue;
+        const kilograms = this.state.unitType !== 'kg' ? tryConvert(unitValue, toKilograms, this.state.unitType) : unitValue;
+        const ounces = this.state.unitType !== 'oz' ? tryConvert(unitValue, toOunces, this.state.unitType) : unitValue;
+        const tons = this.state.unitType !== 'ton' ? tryConvert(unitValue, toTons, this.state.unitType) : unitValue;
+        const milligrams = this.state.unitType !== 'mg' ? tryConvert(unitValue, toMilligrams, this.state.unitType) : unitValue;
+        
+        return(
+            <div className="row">
+                <div className= "col">
+                    <UnitInput unitName="oz" unitValue={ounces} onValueChange={this.handleOuncesChange} />
+                    <UnitInput unitName="lb" unitValue={pounds} onValueChange={this.handlePoundsChange} />
+                    <UnitInput unitName="ton" unitValue={tons} onValueChange={this.handleTonsChange} />
+                </div>
+                <div className= "col">
+                    <div className="divider"></div>
+                </div>
+                <div className= "col">
+                    <UnitInput unitName="mg" unitValue={milligrams} onValueChange={this.handleMilligramsChange} />
+                    <UnitInput unitName="g" unitValue={grams} onValueChange={this.handleGramsChange} />
+                    <UnitInput unitName="kg" unitValue={kilograms} onValueChange={this.handleKilogramsChange} />
+                </div>
+            </div>
+            );
+    }
+}
+ReactDOM.render(<Form />, document.getElementById("componentDiv"));
+
+
+
+</script>
+
+
+</div>
+
+</body>
+</html>
+
+
